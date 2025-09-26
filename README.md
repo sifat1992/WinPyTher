@@ -31,28 +31,28 @@ Camera has blue light blinking and the green light, also on Gigabit Ethernet Swi
 
 ## Making the camera talk to the laptop:
 1. Find camera IP address:
-CMD method:
+- CMD method:
 ```
  Win + R --> type "cmd" --> Enter --> ipconfig
 ```
 
-It should look like this:
+-It should look like this:
 ```
 IP address: 1xx.1xx.1.50   (your laptop)
 Subnet mask: 255.255.255.0
 Gateway: leave blank           
 ```
-2. Note your IPv4 address (e.g., 192.168.1.50) under "Ethernet adapter." This is the Ethernet network's IP address for your laptop. For streaming to function, the FLIR A400 camera needs to be configured to a compatible address (same subnet, such as 192.168.1.100). IPv4 is what most GigE/RTSP devices (like the FLIR A400) expect.
+📌  Note your IPv4 address (e.g., 192.168.1.50) under "Ethernet adapter." This is the Ethernet network's IP address for your laptop. For streaming to function, the FLIR A400 camera needs to be configured to a compatible address (same subnet, such as 192.168.1.100). IPv4 is what most GigE/RTSP devices (like the FLIR A400) expect.
 
 
 ## Tools:
--Install FLIR IPConfig 3.5. After Instalaltion it should show the camera's IP address.
+- Install FLIR IPConfig 3.5. After Instalaltion it should show the camera's IP address.
     <p align="center">
   <img src="assets/1.jpg" width="250" />
     </p>
--If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
--WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50.
--Write down this camera IP — you’ll need it for FFmpeg or ROS2 streaming.
+- If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
+- WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50.
+- Write down this camera IP — you’ll need it for FFmpeg or ROS2 streaming.
 
 Sometimes you want to assign an IP address, or the camera doesn't automatically capture one.
 - Launch Run → ncpa.cpl, which displays Network Connections.
@@ -77,7 +77,7 @@ After I find the camera in the SpinView, I forced all IP address to follow my la
 ```
 vlc--> open network stream--> rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 (should be your IP) --> Play
 ```
-To record:
+- To record:
 ```
 vlc--> convert\save--> Network ( rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 )--> convert/save --> Video - H.264 + Mp3 (MP4)--> Destination file --> browse anywhere youw want and give it a name. The video should be recodred and saved in the folder you saved.
 ```
@@ -88,30 +88,28 @@ sudo apt update
 sudo apt install ffmpeg
 ```
 
-Run this in Command Prompt / Terminal (Use your camera’s IP):
-
-Preview steram:
+- Preview steram:
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -f sdl "FLIR_A400_Stream"
 ```
-Record raw video:
+- Record raw video:
 
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -c copy thermal_recording.mp4
 ```
->To use each frame as an image:
+- To use each frame as an image:
+  
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -qscale:v 2 frames/frame_%04d.jpg
 ```
 #
 📌 Note: pip install ffmpeg or pip install ffmpeg-python does not install FFmpeg itself. You still need the standalone FFmpeg binary on your system (Windows: download zip from gyan.dev
-; Linux: sudo apt install ffmpeg). Once installed, you can optionally use the Python bindings if you want to call FFmpeg from scripts.
+; Linux: sudo apt install ffmpeg). Once installed, you can optionally use the Python bindings if you want to call FFmpeg from scripts. But I did it, I did not have Linux then. 
 
-But I did it, I did not have Linux then. 
 ```
 pip install ffmpeg-python
 ```
-CMD:
+- CMD:
 
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0-c:v libx264 -preset veryfast -crf 23 -c:a aac output.mp4
