@@ -65,3 +65,51 @@ Cautions:
    
 After I find the camera in the SpinView, I forced all IP address to follow my laptop's IP address. 
 Reminnder: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
+
+## Raw Data:
+1. I had VLC on my laptop. I wanted to use it for camera streaming. 
+vlc--> open network stream--> rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 (should be your IP) --> Play
+To record:
+vlc--> convert\save--> Network ( rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 )--> convert/save --> Video - H.264 + Mp3 (MP4)--> Destination file --> browse anywhere youw want and give it a name. The video should be recodred and saved in the folder you saved. 
+2. Install FFmpeg:
+Windows: Download FFmpeg build--> unzip --> add the bin/ folder to your PATH.
+```
+sudo apt update
+sudo apt install ffmpeg
+```
+Run this in Command Prompt / Terminal (Use your camera’s IP):
+```
+ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -f sdl "FLIR_A400_Stream"
+```
+>rtsp://192.168.0.2/avc?ch=0 → default RTSP stream from the A400.
+>-f sdl → opens a live preview window.
+>If you only want to watch without saving, you can also test in VLC: Media → Open Network Stream.
+>To record a video:
+```
+ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -c copy thermal_recording.mp4
+```
+>To use each frame as an image:
+```
+ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -qscale:v 2 frames/frame_%04d.jpg
+```
+Note: pip install ffmpeg or pip install ffmpeg-python does not install FFmpeg itself. You still need the standalone FFmpeg binary on your system (Windows: download zip from gyan.dev
+; Linux: sudo apt install ffmpeg). Once installed, you can optionally use the Python bindings if you want to call FFmpeg from scripts.
+
+But I did it, I did not have Linux then. 
+```
+pip install ffmpeg-python
+```
+CMD:
+
+```
+ffmpeg -i rtsp://192.168.0.2/avc?ch=0-c:v libx264 -preset veryfast -crf 23 -c:a aac output.mp4
+```
+
+-i 192.168.0.2/avc?ch=0 → the input RTSP stream from the camera (192.168.131.2 = camera’s IP).
+-c:v libx264 → encode video with H.264 (widely compatible, efficient).
+-preset veryfast → speeds up encoding (bigger files, but good for live recording).
+-crf 23 → sets quality (lower = better quality & bigger file, higher = more compressed).
+-c:a aac → encodes audio in AAC (safe even if the stream has no audio, avoids errors).
+output.mp4 → saves the recording to a file.
+
+
