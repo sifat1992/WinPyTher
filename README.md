@@ -35,6 +35,13 @@ CMD method:
 ```
  Win + R --> type "cmd" --> Enter --> ipconfig
 ```
+
+It should look like this:
+```
+IP address: 1xx.1xx.1.50   (your laptop)
+Subnet mask: 255.255.255.0
+Gateway: leave blank           
+```
 2. Note your IPv4 address (e.g., 192.168.1.50) under "Ethernet adapter." This is the Ethernet network's IP address for your laptop. For streaming to function, the FLIR A400 camera needs to be configured to a compatible address (same subnet, such as 192.168.1.100). IPv4 is what most GigE/RTSP devices (like the FLIR A400) expect.
 
 
@@ -55,26 +62,7 @@ Sometimes you want to assign an IP address, or the camera doesn't automatically 
    <p align="center">
   <img src="assets/2.jpg" width="250" />
    </p>
-  
-Configure a static IP address:
-```
-IP address: 1xx.1xx.1.50   (your laptop)
-Subnet mask: 255.255.255.0
-Gateway: leave blank           
-```
 
-4. Change your laptop’s IPv4 address
-Press Win+R → ncpa.cpl.
-Right-click my GigE / ADX adapter --> Properties.
-Select Internet Protocol Version 4 (TCP/IPv4) --> Properties.
-Set a static IP close to the camera’s:
-
-```
-Camera (from Wireshark): 1xx.1xx.0.2
-My laptop (manual):      1xx.1xx.0.10
-Subnet mask:             255.255.255.0
-Gateway: (blank)
-```
 Cautions:
 - Always keep the third number block the same (1xx.1xx.0.x) for both laptop and camera → that’s the subnet.
 - nly the last digit should differ (e.g., .2 vs .10).
