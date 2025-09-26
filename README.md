@@ -12,10 +12,10 @@ The first thing I started to work with was installing Spinnaker SDK from Teledyn
 https://www.teledynevisionsolutions.com/products/spinnaker-sdk/?model=Spinnaker%20SDK&vertical=machine%20vision&segment=iis
 
 During the Installation:
-1. After running the installer, SDK+Drivers are always default.
-2. Checking the Spinview, PySpin (Python bindings) and GUI is recommended.
-3. After finishing the installation, laptop or pc should be booted.
-4. Now, spinView should appear in the Start Menu---> fLIR systems and the camera should appear in Device Manager. 
+- After running the installer, SDK+Drivers are always default.-
+- Checking the Spinview, PySpin (Python bindings) and GUI is recommended.
+- After finishing the installation, laptop or pc should be booted.
+- Now, spinView should appear in the Start Menu---> fLIR systems and the camera should appear in Device Manager. 
 
 If you have all the cables and componenets of the FLIR camera set up tools or starter kits, then you are golden. However, I only got the FLIR a400 itself and M12 to RJ45 Adapter. To make it work with my laptop, I had to order some cables. 
 >	POE: Gigabit PoE+ Injector 30W IEEE802.3at/af Compliant, Supplies PoE(15.4W) or PoE+(30W) Power Over Ethernet Distances Up to 328ft, PoE Injector Adapter for Camera/Access Point/IP Phones
@@ -39,7 +39,7 @@ CMD method:
 
 
 ## 3. tools:
->Install FLIR IPConfig 3.5. After Instalaltion it should show the camera's IP address.
+-Install FLIR IPConfig 3.5. After Instalaltion it should show the camera's IP address.
     <p align="center">
   <img src="assets/1.jpg" width="250" />
     </p>
@@ -76,7 +76,7 @@ Cautions:
 - If you assign them identical IPs, neither will work.
    
 After I find the camera in the SpinView, I forced all IP address to follow my laptop's IP address. I could not change it through FLIR -IPConfig 3.5, so I had to brute force it. 
-## Reminder: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
+# Reminder: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
 
 ## Raw Data Collection:
 - I had VLC on my laptop. I wanted to use it for camera streaming.
@@ -101,7 +101,6 @@ Preview steram:
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -f sdl "FLIR_A400_Stream"
 ```
 Record raw video:
->To record a video
 
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -c copy thermal_recording.mp4
@@ -110,6 +109,7 @@ ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -c copy thermal_recording.mp4
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -qscale:v 2 frames/frame_%04d.jpg
 ```
+#
 Note: pip install ffmpeg or pip install ffmpeg-python does not install FFmpeg itself. You still need the standalone FFmpeg binary on your system (Windows: download zip from gyan.dev
 ; Linux: sudo apt install ffmpeg). Once installed, you can optionally use the Python bindings if you want to call FFmpeg from scripts.
 
