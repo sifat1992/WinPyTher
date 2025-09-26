@@ -17,21 +17,23 @@ During the Installation:
 - After finishing the installation, laptop or pc should be booted.
 - Now, spinView should appear in the Start Menu---> fLIR systems and the camera should appear in Device Manager. 
 
-If you have all the cables and componenets of the FLIR camera set up tools or starter kits, then you are golden. However, I only got the FLIR a400 itself and M12 to RJ45 Adapter. To make it work with my laptop, I had to order some cables. 
->	POE: Gigabit PoE+ Injector 30W IEEE802.3at/af Compliant, Supplies PoE(15.4W) or PoE+(30W) Power Over Ethernet Distances Up to 328ft, PoE Injector Adapter for Camera/Access Point/IP Phones
->	NETGEAR 5-Port Gigabit Ethernet Unmanaged Essentials Switch (GS305P) - Home Network Hub, Office Ethernet Splitter, Plug-and-Play, Silent Operation.
->	X-Code-RJ45-Industrial-Shielded-Ethernet M12 8 Pin X-Code Male to RJ45 Cat6a Ethernet Shielded Cable for Cognex Industrial Camera Flexible 3.3Ft|1M
->   UGREEN USB to Ethernet Adapter, 1000Mbps Plug and Play Ethernet Adapter with USB 3.0, Driver Free, RJ45 LAN Network Dongle Compatible with Nintendo Switch, Laptop, PC, MacBook, Windows, macOS, Linux
+If you have all the cables and componenets of the FLIR camera set up tools or starter kits, then you are golden. However, I only got the FLIR a400 itself and M12 to RJ45 Adapter. To make it work with my laptop, I had to order some cables and gears. 
+- 	POE: Gigabit PoE+ Injector 30W IEEE802.3at/af Compliant, Supplies PoE(15.4W) or PoE+(30W) Power Over Ethernet Distances Up to 328ft, PoE Injector Adapter for Camera/Access Point/IP Phones
+-	NETGEAR 5-Port Gigabit Ethernet Unmanaged Essentials Switch (GS305P) - Home Network Hub, Office Ethernet Splitter, Plug-and-Play, Silent Operation.
+-	X-Code-RJ45-Industrial-Shielded-Ethernet M12 8 Pin X-Code Male to RJ45 Cat6a Ethernet Shielded Cable for Cognex Industrial Camera Flexible 3.3Ft|1M
+-  UGREEN USB to Ethernet Adapter, 1000Mbps Plug and Play Ethernet Adapter with USB 3.0, Driver Free, RJ45 LAN Network Dongle Compatible with Nintendo Switch, Laptop, PC, MacBook, Windows, macOS, Linux
 
-## Hardware Set Up:
+## 1. Hardware Set Up:
 The connection chain:
+```
 Laptop--> UGREEN USB to Ethernet Adapter--> Cat6 cable-->NETGEAR 5-Port Gigabit Ethernet Switch (GS305P)
 Flir A400--> NETGEAR 5-Port Gigabit Ethernet Switch (GS305P). 
-Camera has blue light blinking and the green light, also on Gigabit Ethernet Switch (GS305P), and the switch ports light up green when connected properly. 
+Camera has blue light blinking and the green light, also on Gigabit Ethernet Switch (GS305P), and the switch ports light up green when connected properly.
+```
 
-## Making the camera talk to the laptop:
-1. Find camera IP address:
-- CMD method:
+## 2. Making the camera talk to the laptop:
+- Find laptop's IP address, CMD method:
+
 ```
  Win + R --> type "cmd" --> Enter --> ipconfig
 ```
@@ -45,14 +47,17 @@ Gateway: leave blank
 📌  Note your IPv4 address (e.g., 192.168.1.50) under "Ethernet adapter." This is the Ethernet network's IP address for your laptop. For streaming to function, the FLIR A400 camera needs to be configured to a compatible address (same subnet, such as 192.168.1.100). IPv4 is what most GigE/RTSP devices (like the FLIR A400) expect.
 
 
-## Tools:
+## 3. Tools:
 - Install FLIR IPConfig 3.5. After Instalaltion it should show the camera's IP address.
     <p align="center">
   <img src="assets/1.jpg" width="250" />
     </p>
-- If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
-- WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50.
+❌ If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
+❌ WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50. 
+
+📌 Note: if you see 192.168.x.x without any hassle like mine, congrats! The camera is now a potato. Assign a static IP and bring it back from the dead!
 - Write down this camera IP — you’ll need it for FFmpeg or ROS2 streaming.
+
 
 Sometimes you want to assign an IP address, or the camera doesn't automatically capture one.
 - Launch Run → ncpa.cpl, which displays Network Connections.
@@ -65,14 +70,14 @@ Sometimes you want to assign an IP address, or the camera doesn't automatically 
 
 Cautions:
 - Always keep the third number block the same (1xx.1xx.0.x) for both laptop and camera → that’s the subnet.
-- nly the last digit should differ (e.g., .2 vs .10).
+- Only the last digit should differ (e.g., .2 vs .10).
 - If you assign them identical IPs, neither will work.
    
 After I find the camera in the SpinView, I forced all IP address to follow my laptop's IP address. I could not change it through FLIR -IPConfig 3.5, so I had to brute force it. 
 
-📌 Note: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
+📌 Note: I had to go through all these hassles, because the FLIR ipconfig ghosted me, nothing was showing up on spinView either. If you are luckier than me, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!! After fighting with spinView for almost 3 hours, I realized the camera itself was alive the whole time- just did not feel like showing up 😂😂😂.
 
-## Raw Data Collection:
+## 4. Raw Data Collection:
 - I had VLC on my laptop. I wanted to use it for camera streaming.
 ```
 vlc--> open network stream--> rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 (should be your IP) --> Play
