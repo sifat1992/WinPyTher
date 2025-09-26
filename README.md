@@ -53,6 +53,7 @@ Gateway: leave blank
   <img src="assets/1.jpg" width="250" />
     </p>
 ❌ If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
+
 ❌ WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50. 
 
 📌 Note: if you see 192.168.x.x without any hassle like mine, congrats! The camera is now a potato. Assign a static IP and bring it back from the dead!
