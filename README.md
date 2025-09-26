@@ -10,7 +10,11 @@ The first thing I started to work with was installing Spinnaker SDK from Teledyn
 
 https://www.teledynevisionsolutions.com/products/spinnaker-sdk/?model=Spinnaker%20SDK&vertical=machine%20vision&segment=iis
 
-After running the installer, SDK+Drivers are always default, but checking the Spinview, PySpin (Python bindings) and GUI is recommended. After finishing the installation, laptop or pc should be booted. Now, spinView should appear in the Start Menu---> fLIR systems and the camera should appear in Device Manager. 
+During the Installation:
+1. After running the installer, SDK+Drivers are always default.
+2. Checking the Spinview, PySpin (Python bindings) and GUI is recommended.
+3. After finishing the installation, laptop or pc should be booted.
+4. Now, spinView should appear in the Start Menu---> fLIR systems and the camera should appear in Device Manager. 
 
 If you have all the cables and componenets of the FLIR camera set up tools or starter kits, then you are golden. However, I only got the FLIR a400 itself and M12 to RJ45 Adapter. To make it work with my laptop, I had to order some cables. 
 1.	POE: Gigabit PoE+ Injector 30W IEEE802.3at/af Compliant, Supplies PoE(15.4W) or PoE+(30W) Power Over Ethernet Distances Up to 328ft, PoE Injector Adapter for Camera/Access Point/IP Phones
@@ -19,22 +23,26 @@ If you have all the cables and componenets of the FLIR camera set up tools or st
 4. UGREEN USB to Ethernet Adapter, 1000Mbps Plug and Play Ethernet Adapter with USB 3.0, Driver Free, RJ45 LAN Network Dongle Compatible with Nintendo Switch, Laptop, PC, MacBook, Windows, macOS, Linux
 
 ## Hardware Set Up
+The connection chain:
 Laptop--> UGREEN USB to Ethernet Adapter--> Cat6 cable-->NETGEAR 5-Port Gigabit Ethernet Switch (GS305P)
 Flir A400--> NETGEAR 5-Port Gigabit Ethernet Switch (GS305P). 
-Camera has blue light blinking and the green light, also on Gigabit Ethernet Switch (GS305P), the used ports will have green lights on that means the camera is working with ethernet properly. 
+Camera has blue light blinking and the green light, also on Gigabit Ethernet Switch (GS305P), and the switch ports light up green when connected properly. 
 
-## Making the camera talk to my laotop:
+## Making the camera talk to the laotop:
 1. Find camera IP address:
-             Win + R --> type "cmd" --> Enter --> ipconfig
-Note your IPv4 address (e.g., 192.168.1.50) under "Ethernet adapter." This is the Ethernet network's IP address for your laptop. For streaming to function, the FLIR A400 camera needs to be configured to a compatible address (same subnet, such as 192.168.1.100). IPv4 is what most GigE/RTSP devices (like the FLIR A400) expect.
+CMD method:
+1. Win + R --> type "cmd" --> Enter --> ipconfig
+2. Note your IPv4 address (e.g., 192.168.1.50) under "Ethernet adapter." This is the Ethernet network's IP address for your laptop. For streaming to function, the FLIR A400 camera needs to be configured to a compatible address (same subnet, such as 192.168.1.100). IPv4 is what most GigE/RTSP devices (like the FLIR A400) expect.
 
-2. Install FLIR IPConfig 3.5. After Instalaltion it should show the camera's IP address.
+3. tools:
+>Install FLIR IPConfig 3.5. After Instalaltion it should show the camera's IP address.
     <p align="center">
   <img src="assets/1.jpg" width="250" />
     </p>
-If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
-WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50.
+>If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
+>WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50.
 Write down this camera IP — you’ll need it for FFmpeg or ROS2 streaming.
+
 Sometimes you want to assign an IP address, or the camera doesn't automatically capture one.
 1. Launch Run → ncpa.cpl, which displays Network Connections.
 2. Locate your GigE adapter, also known as an ADX adapter or GigE Vision adapter.
@@ -46,7 +54,7 @@ Subnet mask: 255.255.255.0
 Gateway: leave blank           
 ```
 
-4. Change my laptop’s IPv4 address
+4. Change your laptop’s IPv4 address
 Press Win+R → ncpa.cpl.
 Right-click my GigE / ADX adapter --> Properties.
 Select Internet Protocol Version 4 (TCP/IPv4) --> Properties.
@@ -59,19 +67,24 @@ Subnet mask:             255.255.255.0
 Gateway: (blank)
 ```
 Cautions:
-1. Always keep the third number block the same (1xx.1xx.0.x) for both laptop and camera → that’s the subnet.
-2. nly the last digit should differ (e.g., .2 vs .10).
-3. If you assign them identical IPs, neither will work.
+>. Always keep the third number block the same (1xx.1xx.0.x) for both laptop and camera → that’s the subnet.
+>. nly the last digit should differ (e.g., .2 vs .10).
+>. If you assign them identical IPs, neither will work.
    
-After I find the camera in the SpinView, I forced all IP address to follow my laptop's IP address. 
-Reminnder: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
+After I find the camera in the SpinView, I forced all IP address to follow my laptop's IP address. I could not change it through FLIR -IPConfig 3.5, so I had to brute force it. 
+## Reminder: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
 
-## Raw Data:
-1. I had VLC on my laptop. I wanted to use it for camera streaming. 
+## Raw Data Collection:
+1. I had VLC on my laptop. I wanted to use it for camera streaming.
+```
 vlc--> open network stream--> rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 (should be your IP) --> Play
+```
 To record:
-vlc--> convert\save--> Network ( rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 )--> convert/save --> Video - H.264 + Mp3 (MP4)--> Destination file --> browse anywhere youw want and give it a name. The video should be recodred and saved in the folder you saved. 
+```
+vlc--> convert\save--> Network ( rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 )--> convert/save --> Video - H.264 + Mp3 (MP4)--> Destination file --> browse anywhere youw want and give it a name. The video should be recodred and saved in the folder you saved.
+```
 2. Install FFmpeg:
+   
 Windows: Download FFmpeg build--> unzip --> add the bin/ folder to your PATH.
 ```
 sudo apt update
@@ -107,7 +120,7 @@ CMD:
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0-c:v libx264 -preset veryfast -crf 23 -c:a aac output.mp4
 ```
 
--i 192.168.0.2/avc?ch=0 → the input RTSP stream from the camera (192.168.131.2 = camera’s IP).
+-i rtsp://192.168.0.2/avc?ch=0 → the input RTSP stream from the camera (rtsp://192.168.x.2/avc?ch=0 = camera’s IP).
 -c:v libx264 → encode video with H.264 (widely compatible, efficient).
 -preset veryfast → speeds up encoding (bigger files, but good for live recording).
 -crf 23 → sets quality (lower = better quality & bigger file, higher = more compressed).
