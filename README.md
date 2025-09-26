@@ -45,7 +45,7 @@ Gateway: leave blank
 2. Note your IPv4 address (e.g., 192.168.1.50) under "Ethernet adapter." This is the Ethernet network's IP address for your laptop. For streaming to function, the FLIR A400 camera needs to be configured to a compatible address (same subnet, such as 192.168.1.100). IPv4 is what most GigE/RTSP devices (like the FLIR A400) expect.
 
 
-## 3. tools:
+## Tools:
 -Install FLIR IPConfig 3.5. After Instalaltion it should show the camera's IP address.
     <p align="center">
   <img src="assets/1.jpg" width="250" />
@@ -69,7 +69,8 @@ Cautions:
 - If you assign them identical IPs, neither will work.
    
 After I find the camera in the SpinView, I forced all IP address to follow my laptop's IP address. I could not change it through FLIR -IPConfig 3.5, so I had to brute force it. 
-# Reminder: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
+
+📌 Note: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
 
 ## Raw Data Collection:
 - I had VLC on my laptop. I wanted to use it for camera streaming.
@@ -103,7 +104,7 @@ ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -c copy thermal_recording.mp4
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -qscale:v 2 frames/frame_%04d.jpg
 ```
 #
-Note: pip install ffmpeg or pip install ffmpeg-python does not install FFmpeg itself. You still need the standalone FFmpeg binary on your system (Windows: download zip from gyan.dev
+📌 Note: pip install ffmpeg or pip install ffmpeg-python does not install FFmpeg itself. You still need the standalone FFmpeg binary on your system (Windows: download zip from gyan.dev
 ; Linux: sudo apt install ffmpeg). Once installed, you can optionally use the Python bindings if you want to call FFmpeg from scripts.
 
 But I did it, I did not have Linux then. 
