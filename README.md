@@ -51,6 +51,11 @@ Sometimes you want to assign an IP address, or the camera doesn't automatically 
 - Launch Run → ncpa.cpl, which displays Network Connections.
 - Locate your GigE adapter, also known as an ADX adapter or GigE Vision adapter.
 - Right-click → Properties → Go to Properties → Internet Protocol Version 4 (TCP/IPv4).
+
+   <p align="center">
+  <img src="assets/2.jpg" width="250" />
+   </p>
+  
 Configure a static IP address:
 ```
 IP address: 1xx.1xx.1.50   (your laptop)
