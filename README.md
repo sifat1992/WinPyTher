@@ -81,10 +81,12 @@ Run this in Command Prompt / Terminal (Use your camera’s IP):
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -f sdl "FLIR_A400_Stream"
 ```
+
+```
 >rtsp://192.168.0.2/avc?ch=0 → default RTSP stream from the A400.
+```
 >-f sdl → opens a live preview window.
->If you only want to watch without saving, you can also test in VLC: Media → Open Network Stream.
->To record a video:
+>To record a video
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -c copy thermal_recording.mp4
 ```
