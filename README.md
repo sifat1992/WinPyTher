@@ -29,7 +29,7 @@ Laptop--> UGREEN USB to Ethernet Adapter--> Cat6 cable-->NETGEAR 5-Port Gigabit 
 Flir A400--> NETGEAR 5-Port Gigabit Ethernet Switch (GS305P). 
 Camera has blue light blinking and the green light, also on Gigabit Ethernet Switch (GS305P), and the switch ports light up green when connected properly. 
 
-## Making the camera talk to the laotop:
+## Making the camera talk to the laptop:
 1. Find camera IP address:
 CMD method:
 ```
@@ -43,14 +43,14 @@ CMD method:
     <p align="center">
   <img src="assets/1.jpg" width="250" />
     </p>
->If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
->WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50.
-> Write down this camera IP — you’ll need it for FFmpeg or ROS2 streaming.
+-If it does not show it, then try Advanced IP Scanner, another software for finding IP addresses of devices. I had issue with both of these. I had to look for third option for fiiding out the IP address of the camera. 
+-WireShark, I managed to find the IP address using this software. Just install, select the ethernet showing up and it will find all the addresses. The one that looks promising or differant then the rest can be the IP address we need. Example: You might see 192.168.1.100 pop up, while your laptop is 192.168.1.50.
+-Write down this camera IP — you’ll need it for FFmpeg or ROS2 streaming.
 
 Sometimes you want to assign an IP address, or the camera doesn't automatically capture one.
-1. Launch Run → ncpa.cpl, which displays Network Connections.
-2. Locate your GigE adapter, also known as an ADX adapter or GigE Vision adapter.
-3. Right-click → Properties → Go to Properties → Internet Protocol Version 4 (TCP/IPv4).
+- Launch Run → ncpa.cpl, which displays Network Connections.
+- Locate your GigE adapter, also known as an ADX adapter or GigE Vision adapter.
+- Right-click → Properties → Go to Properties → Internet Protocol Version 4 (TCP/IPv4).
 Configure a static IP address:
 ```
 IP address: 1xx.1xx.1.50   (your laptop)
@@ -71,15 +71,15 @@ Subnet mask:             255.255.255.0
 Gateway: (blank)
 ```
 Cautions:
->. Always keep the third number block the same (1xx.1xx.0.x) for both laptop and camera → that’s the subnet.
->. nly the last digit should differ (e.g., .2 vs .10).
->. If you assign them identical IPs, neither will work.
+- Always keep the third number block the same (1xx.1xx.0.x) for both laptop and camera → that’s the subnet.
+- nly the last digit should differ (e.g., .2 vs .10).
+- If you assign them identical IPs, neither will work.
    
 After I find the camera in the SpinView, I forced all IP address to follow my laptop's IP address. I could not change it through FLIR -IPConfig 3.5, so I had to brute force it. 
 ## Reminder: I had to go through all these hassles, because the FLIR ipconfig was not working, nothing was showing up on spinView either. If you do not have hard luck like mine, then the official FLiR IPConfig should find the IP address of the camera and you can change it to your IP address. And boom, it is done!!
 
 ## Raw Data Collection:
-1. I had VLC on my laptop. I wanted to use it for camera streaming.
+- I had VLC on my laptop. I wanted to use it for camera streaming.
 ```
 vlc--> open network stream--> rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 (should be your IP) --> Play
 ```
@@ -87,7 +87,7 @@ To record:
 ```
 vlc--> convert\save--> Network ( rtsp://169.254.79.239/avc?ch0 or rtsp://169.254.79.239/avc/ch1 )--> convert/save --> Video - H.264 + Mp3 (MP4)--> Destination file --> browse anywhere youw want and give it a name. The video should be recodred and saved in the folder you saved.
 ```
-2. Install FFmpeg: 
+- Install FFmpeg: 
 Windows: Download FFmpeg build--> unzip --> add the bin/ folder to your PATH.
 ```
 sudo apt update
@@ -102,7 +102,7 @@ ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -f sdl "FLIR_A400_Stream"
 ```
 Record raw video:
 >To record a video
->
+
 ```
 ffmpeg -i rtsp://192.168.0.2/avc?ch=0 -c copy thermal_recording.mp4
 ```
